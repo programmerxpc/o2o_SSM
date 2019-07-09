@@ -24,6 +24,7 @@ public class AreaController {
 
     @GetMapping("listarea")
     private Map<String,Object> listArea(){
+
         Map<String,Object> modelMap = new HashMap<>();
         try {
             List<Area> areaList = areaService.getAreaList();
