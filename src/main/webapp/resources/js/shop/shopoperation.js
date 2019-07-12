@@ -2,39 +2,39 @@
  *
  */
 $(function () {
-    // var shopId = getQueryString('shopId');
-    // var isEdit = shopId ? true : false;
+    var shopId = getQueryString('shopId');
+    var isEdit = shopId ? true : false;
     var initUrl = '/o2o/shopadmin/getshopinitinfo';
     var registerShopUrl = '/o2o/shopadmin/registershop';
-    // var shopInfoUrl = '/o2o/shopadmin/getshopbyid?shopId=' + shopId;
-    // var editShopUrl = '/o2o/shopadmin/modifyshop';
-    // if (!isEdit) {
+    var shopInfoUrl = '/o2o/shopadmin/getshopbyid?shopId=' + shopId;
+    var editShopUrl = '/o2o/shopadmin/modifyshop';
+    if (!isEdit) {
         getShopInitInfo();
-    // }else {
-    //     getShopInfo(shopId);
-    // }
+    }else {
+        getShopInfo(shopId);
+    }
 
     //根据shopId获取店铺信息
-    // function getShopInfo(shopId) {
-    //     $.getJSON(shopInfoUrl,function (data) {
-    //         if (data.success) {
-    //             var shop = data.shop;
-    //             $('#shop-name').val(shop.shopName);
-    //             $('#shop-addr').val(shop.shopAddr);
-    //             $('#shop-phone').val(shop.phone);
-    //             $('#shop-desc').val(shop.shopDesc);
-    //             var shopCategoryHtml = '<option data-id="' + shop.shopCategory.shopCategoryId + '" selected>' + shop.shopCategory.shopCategoryName + '</option>';
-    //             var tempAreaHtml = '';
-    //             data.areaList.map(function (item, index) {
-    //                 tempAreaHtml += '<option data-id="' + item.areaId + '">' + item.areaName + '</option>';
-    //             });
-    //             $('#shop-catagory').html(shopCategoryHtml);
-    //             $('#shop-catagory').attr('disabled','disabled');//不能选择
-    //             $('#area').html(tempAreaHtml);
-    //             $("#area option[data-id='"+shop.area.areaId+"']").attr("selected","selected");
-    //         }
-    //     });
-    // }
+    function getShopInfo(shopId) {
+        $.getJSON(shopInfoUrl,function (data) {
+            if (data.success) {
+                var shop = data.shop;
+                $('#shop-name').val(shop.shopName);
+                $('#shop-addr').val(shop.shopAddr);
+                $('#shop-phone').val(shop.phone);
+                $('#shop-desc').val(shop.shopDesc);
+                var shopCategoryHtml = '<option data-id="' + shop.shopCategory.shopCategoryId + '" selected>' + shop.shopCategory.shopCategoryName + '</option>';
+                var tempAreaHtml = '';
+                data.areaList.map(function (item, index) {
+                    tempAreaHtml += '<option data-id="' + item.areaId + '">' + item.areaName + '</option>';
+                });
+                $('#shop-catagory').html(shopCategoryHtml);
+                $('#shop-catagory').attr('disabled','disabled');//不能选择
+                $('#area').html(tempAreaHtml);
+                $("#area option[data-id='"+shop.area.areaId+"']").attr("selected","selected");
+            }
+        });
+    }
 
     //获取店铺基本信息
     function getShopInitInfo() {
@@ -57,9 +57,9 @@ $(function () {
     //点击提交按钮，注册店铺
     $('#submit').click(function () {
         var shop ={};
-        // if (isEdit) {//如果是编辑操作
-        //     shop.shopId = shopId;
-        // }
+        if (isEdit) {//如果是编辑操作
+            shop.shopId = shopId;
+        }
         shop.shopName = $('#shop-name').val();
         shop.shopAddr = $('#shop-addr').val();
         shop.phone = $('#shop-phone').val();
@@ -86,7 +86,7 @@ $(function () {
         formData.append('verifyCodeActual',verifyCodeActual);
 
         $.ajax({
-            url: registerShopUrl,
+            url: (isEdit?editShopUrl:registerShopUrl),
             type: 'POST',
             data: formData,
             contentType : false,
