@@ -48,6 +48,51 @@ public class ShopManagementController {
     @Autowired
     private ShopService shopService;
 
+    @GetMapping("getshopmanagementinfo")
+    private Map<String,Object> getShopManagementInfo(HttpServletRequest request){
+        Map<String,Object> modelMap = new HashMap<>();
+        long shopId = HttpServletRequestUtil.getLong(request, "shopId");
+        if (shopId <= 0){
+            Object currentShopObj = request.getSession().getAttribute("currentShop");
+            if (currentShopObj == null){
+                modelMap.put("redirect",true);
+                modelMap.put("url","/o2o/shopadmin/shoplist");
+            }else {
+                Shop currentShop = (Shop) currentShopObj;
+                modelMap.put("redirect",false);
+                modelMap.put("shopId",currentShop.getShopId());
+            }
+        }else {
+            Shop currentShop = new Shop();
+            currentShop.setShopId(shopId);
+            request.getSession().setAttribute("currentShop",currentShop);
+            modelMap.put("redirect",false);
+        }
+        return modelMap;
+    }
+
+    @GetMapping("getshoplist")
+    private Map<String,Object> getShopList(HttpServletRequest request){
+        Map<String,Object> modelMap = new HashMap<>();
+        PersonInfo user = new PersonInfo();
+        user.setUserId(1L);
+        user.setName("test");
+        request.getSession().setAttribute("user",user);
+        user = (PersonInfo) request.getSession().getAttribute("user");
+        try {
+            Shop shopCondition = new Shop();
+            shopCondition.setOwner(user);
+            ShopExecution se = shopService.getShopList(shopCondition, 1, 100);
+            modelMap.put("success",true);
+            modelMap.put("shopList",se.getShopList());
+            modelMap.put("user",user);
+        } catch (Exception e) {
+            modelMap.put("success",false);
+            modelMap.put("errMsg",e.toString());
+        }
+        return modelMap;
+    }
+
     @PostMapping("modifyshop")
     private Map<String,Object> modifyShop(HttpServletRequest request){
         Map<String,Object> modelMap = new HashMap<>();

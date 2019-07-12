@@ -14,9 +14,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/shopadmin/*")
 public class ShopAdminController {
 
+    /**
+     * 店铺添加和编辑页面
+     * @return
+     */
     @GetMapping("shopoperation")
     public String shopOperation(){
         return "shop/shopoperation";
+    }
+
+    /**
+     * 店铺列表页面
+     * @return
+     */
+    @GetMapping("shoplist")
+    public String shopList(){
+        return "shop/shoplist";
+    }
+
+    /**
+     * 商店管理页面
+     * @return
+     */
+    @GetMapping("shopmanagement")
+    public String shopManagement(){
+        return "shop/shopmanagement";
     }
 
 }
