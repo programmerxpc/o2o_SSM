@@ -2,15 +2,12 @@ package cn.sunshine.o2o.enums;
 
 /**
  * @author XiaoPengCheng
- * @create 2019-07-10 22:47
+ * @create 2019-07-13 9:56
  */
-public enum ShopStateEnum {
+public enum ProductCategoryStateEnum {
 
-    CHECKING(0,"审核中"),
-    OFFLINE(-1,"非法店铺"),
-    SUCCESS(1,"操作成功"),
-    PASS(2,"通过认证"),
     INNER_ERROR(-1001,"内部系统错误"),
+    SUCCESS(1,"操作成功"),
     EMPTY(-1002,"传入参数为空")
     ;
 
@@ -18,7 +15,7 @@ public enum ShopStateEnum {
 
     private String stateInfo;
 
-    ShopStateEnum(int state,String stateInfo){
+    ProductCategoryStateEnum(int state,String stateInfo){
         this.state = state;
         this.stateInfo = stateInfo;
     }
@@ -28,8 +25,8 @@ public enum ShopStateEnum {
      * @param state
      * @return
      */
-    public static ShopStateEnum stateOf(int state){
-        for (ShopStateEnum stateEnum : values()){
+    public static ProductCategoryStateEnum stateOf(int state){
+        for (ProductCategoryStateEnum stateEnum : values()){
             if (stateEnum.getState() == state)
                 return stateEnum;
         }

@@ -41,4 +41,13 @@ public class ShopAdminController {
         return "shop/shopmanagement";
     }
 
+    /**
+     * 商品类别管理页面
+     * @return
+     */
+    @GetMapping("productcategorymanagement")
+    public String productCategoryManagement(){
+        return "shop/productcategorymanagement";
+    }
+
 }
