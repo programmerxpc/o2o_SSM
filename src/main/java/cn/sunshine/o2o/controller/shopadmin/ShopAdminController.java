@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ShopAdminController {
 
     /**
-     * 店铺添加和编辑页面
+     * 店铺添加或编辑页面
      * @return
      */
     @GetMapping("shopoperation")
@@ -48,6 +48,15 @@ public class ShopAdminController {
     @GetMapping("productcategorymanagement")
     public String productCategoryManagement(){
         return "shop/productcategorymanagement";
+    }
+
+    /**
+     * 商品添加或编辑页面
+     * @return
+     */
+    @GetMapping("productoperation")
+    public String productOperation(){
+        return "shop/productoperation";
     }
 
 }

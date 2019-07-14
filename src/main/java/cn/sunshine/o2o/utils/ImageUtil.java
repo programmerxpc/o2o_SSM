@@ -1,5 +1,6 @@
 package cn.sunshine.o2o.utils;
 
+import cn.sunshine.o2o.dto.ImageHolder;
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Positions;
 import org.slf4j.Logger;
@@ -30,23 +31,46 @@ public class ImageUtil {
 
     /**
      * 生成缩略图，并返回图片相对值路径
-     * @param thumbnailiInputStream
-     * @param fileName
+     * @param thumbnail
      * @param targetAddr
      * @return
      */
-    public static String generateThumbnail(InputStream thumbnailiInputStream, String fileName,String targetAddr){
+    public static String generateThumbnail(ImageHolder thumbnail, String targetAddr){
         String realFileName = getRandomFileName();
-        String extension = getFileExtension(fileName);
+        String extension = getFileExtension(thumbnail.getImageName());
         makeDirPath(targetAddr);
         String relativeAddr = targetAddr + realFileName + extension;
         logger.debug("current complete addr is:" + PathUtil.getImgBasePath() + relativeAddr);
         logger.debug("basePath is:" + basePath);
         File dest = new File(PathUtil.getImgBasePath() + relativeAddr);
         try {
-            Thumbnails.of(thumbnailiInputStream).size(200,200)
+            Thumbnails.of(thumbnail.getImage()).size(200,200)
                     .watermark(Positions.BOTTOM_RIGHT,ImageIO.read(new File(basePath + "/watermark.jpg")),0.25f)
                     .outputQuality(0.8f).toFile(dest);
+        } catch (IOException e) {
+            logger.error(e.toString());
+        }
+        return relativeAddr;
+    }
+
+    /**
+     * 处理详情图，返回新生成图片的相对值路径
+     * @param thumbnail
+     * @param targetAddr
+     * @return
+     */
+    public static String generateNormalImg(ImageHolder thumbnail, String targetAddr){
+        String realFileName = getRandomFileName();
+        String extension = getFileExtension(thumbnail.getImageName());
+        makeDirPath(targetAddr);
+        String relativeAddr = targetAddr + realFileName + extension;
+        logger.debug("current complete addr is:" + PathUtil.getImgBasePath() + relativeAddr);
+        logger.debug("basePath is:" + basePath);
+        File dest = new File(PathUtil.getImgBasePath() + relativeAddr);
+        try {
+            Thumbnails.of(thumbnail.getImage()).size(337,640)
+                    .watermark(Positions.BOTTOM_RIGHT,ImageIO.read(new File(basePath + "/watermark.jpg")),0.25f)
+                    .outputQuality(0.9f).toFile(dest);
         } catch (IOException e) {
             logger.error(e.toString());
         }
