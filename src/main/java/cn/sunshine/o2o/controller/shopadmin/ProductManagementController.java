@@ -41,6 +41,65 @@ public class ProductManagementController {
     //支持上传商品详情图的最大数量
     private static final int IMAGEMAXCOUNT = 6;
 
+    @GetMapping("getproductlistbyshop")
+    private Map<String,Object> getProductListByShop(HttpServletRequest request){
+        Map<String,Object> modelMap = new HashMap<>();
+        //获取前台传入的页码
+        int pageIndex = HttpServletRequestUtil.getInt(request, "pageIndex");
+        //获取前台传入的每页需要显示的商品数
+        int pageSize = HttpServletRequestUtil.getInt(request, "pageSize");
+        //从session中获取店铺信息，主要获取shopId
+        Shop currentShop = (Shop)request.getSession().getAttribute("currentShop");
+        //空值判断
+        if ((pageIndex > -1) && (pageSize > -1) && (currentShop != null) && (currentShop.getShopId() != null)){
+            //获取传入的需要检索的条件,包括是否需要从，商品类别,模糊查找商品名,商品状态，去筛选商品类别列表
+            //筛选的条件可以排列组合
+            String productName = HttpServletRequestUtil.getString(request, "productName");
+            int enableStatus = HttpServletRequestUtil.getInt(request, "enableStatus");
+            long productCategoryId = HttpServletRequestUtil.getLong(request, "productCategoryId");
+            Product productCondition = compactProductCondition(currentShop.getShopId(),productName,enableStatus,productCategoryId);
+            //传入查询条件以及分页信息进行查询
+            ProductExecution pe = productService.getProductList(productCondition, pageIndex, pageSize);
+            modelMap.put("success",true);
+            modelMap.put("productList",pe.getProductList());
+            modelMap.put("count",pe.getCount());
+        }else {
+            modelMap.put("success",false);
+            modelMap.put("errMsg","传入参数为空");
+        }
+        return modelMap;
+    }
+
+    /**
+     * 封装商品查询条件
+     * @param shopId
+     * @param productName
+     * @param enableStatus
+     * @param productCategoryId
+     * @return
+     */
+    private Product compactProductCondition(Long shopId, String productName, int enableStatus, long productCategoryId) {
+        Product productCondition = new Product();
+        Shop shop = new Shop();
+        shop.setShopId(shopId);
+        productCondition.setShop(shop);
+        //若有商品名要求，则添加进去
+        if (productName != null){
+            productCondition.setProductName(productName);
+        }
+        //若有商品状态要求，则添加
+        if (enableStatus > -1){
+            productCondition.setEnableStatus(enableStatus);
+        }
+        //若有商品类别要求，则添加
+        if (productCategoryId > -1){
+            ProductCategory productCategory = new ProductCategory();
+            productCategory.setProductCategoryId(productCategoryId);
+            productCondition.setProductCategory(productCategory);
+        }
+        return productCondition;
+    }
+
     @PostMapping("modifyproduct")
     private Map<String,Object> modifyProduct(HttpServletRequest request){
         Map<String,Object> modelMap = new HashMap<>();

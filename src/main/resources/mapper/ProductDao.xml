@@ -82,4 +82,63 @@
         WHERE product_id=#{productId}
         AND shop_id=#{shop.shopId}
     </update>
+    <select id="queryProductList" resultType="cn.sunshine.o2o.entity.Product">
+        SELECT
+        product_id,
+        product_name,
+        product_desc,
+        img_addr,
+        normal_price,
+        promotion_price,
+        priority,
+        create_time,
+        last_edit_time,
+        enable_status,
+        product_category_id,
+        shop_id
+        FROM 
+        tb_product
+        <where>
+            <if test="productCondition.productName != null">
+                AND product_name LIKE concat('%',#{productCondition.productName},'%')
+            </if>
+            <if test="productCondition.enableStatus != null">
+                AND enable_status=#{productCondition.enableStatus}
+            </if>
+            <if test="productCondition.productCategory != null and productCondition.productCategory.productCategoryId != null">
+                AND product_category_id=#{productCondition.productCategory.productCategoryId}
+            </if>
+            <if test="productCondition.shop != null and productCondition.shop.shopId != null">
+                AND shop_id=#{productCondition.shop.shopId}
+            </if>
+        </where>
+        ORDER BY
+        priority DESC
+        LIMIT #{rowIndex},#{pageSize}
+    </select>
+    <select id="queryProductCount" resultType="int">
+        SELECT COUNT(1)
+        FROM
+        tb_product
+        <where>
+            <if test="productCondition.productName != null">
+                AND product_name LIKE concat('%',#{productCondition.productName},'%')
+            </if>
+            <if test="productCondition.enableStatus != null">
+                AND enable_status=#{productCondition.enableStatus}
+            </if>
+            <if test="productCondition.productCategory != null and productCondition.productCategory.productCategoryId != null">
+                AND product_category_id=#{productCondition.productCategory.productCategoryId}
+            </if>
+            <if test="productCondition.shop != null and productCondition.shop.shopId != null">
+                AND shop_id=#{productCondition.shop.shopId}
+            </if>
+        </where>
+    </select>
+    <update id="updateProductCategoryToNull" parameterType="Long">
+        UPDATE
+        tb_product
+        SET product_category_id = NULL
+        WHERE product_category_id=#{productCategoryId}
+    </update>
 </mapper>

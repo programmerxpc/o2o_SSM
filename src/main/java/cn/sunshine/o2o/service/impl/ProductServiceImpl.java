@@ -5,18 +5,26 @@ import cn.sunshine.o2o.dao.ProductImgDao;
 import cn.sunshine.o2o.dto.ImageHolder;
 import cn.sunshine.o2o.dto.ProductExecution;
 import cn.sunshine.o2o.entity.Product;
+import cn.sunshine.o2o.entity.ProductCategory;
 import cn.sunshine.o2o.entity.ProductImg;
+import cn.sunshine.o2o.entity.Shop;
 import cn.sunshine.o2o.enums.ProductStateEnum;
 import cn.sunshine.o2o.exceptions.ProductOperationException;
 import cn.sunshine.o2o.service.ProductService;
+import cn.sunshine.o2o.utils.HttpServletRequestUtil;
 import cn.sunshine.o2o.utils.ImageUtil;
+import cn.sunshine.o2o.utils.PageCalculator;
 import cn.sunshine.o2o.utils.PathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author XiaoPengCheng
@@ -30,6 +38,19 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductImgDao productImgDao;
+
+    @Override
+    public ProductExecution getProductList(Product productCondition, int pageIndex, int pageSize) {
+        //页码转化为数据库行码
+        int rowIndex = PageCalculator.calculateRowIndex(pageIndex, pageSize);
+        List<Product> productList = productDao.queryProductList(productCondition, rowIndex, pageSize);
+        //同等查询条件下的商品总数
+        int count = productDao.queryProductCount(productCondition);
+        ProductExecution pe = new ProductExecution();
+        pe.setProductList(productList);
+        pe.setCount(count);
+        return pe;
+    }
 
     @Override
     public Product getProductById(long productId) {

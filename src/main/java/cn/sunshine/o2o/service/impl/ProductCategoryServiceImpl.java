@@ -1,6 +1,7 @@
 package cn.sunshine.o2o.service.impl;
 
 import cn.sunshine.o2o.dao.ProductCategoryDao;
+import cn.sunshine.o2o.dao.ProductDao;
 import cn.sunshine.o2o.dto.ProductCategoryExecution;
 import cn.sunshine.o2o.entity.ProductCategory;
 import cn.sunshine.o2o.enums.ProductCategoryStateEnum;
@@ -22,10 +23,21 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     @Autowired
     private ProductCategoryDao productCategoryDao;
 
+    @Autowired
+    private ProductDao productDao;
+
     @Override
     @Transactional
     public ProductCategoryExecution deleteProductCategory(long productCategoryId, long shopId) throws ProductCategoryOperationException {
-        //TODO 将此类别下的商品的类别id置为空，再删除掉商品类别
+        //将此类别下的商品的类别id置为空，再删除掉商品类别
+        try {
+            int effectedNum = productDao.updateProductCategoryToNull(productCategoryId);
+            if (effectedNum <= 0){
+                throw new ProductCategoryOperationException("商品类别置空失败");
+            }
+        } catch (ProductCategoryOperationException e) {
+            throw new ProductCategoryOperationException("deleteProductCategory error:" + e.getMessage());
+        }
         try {
             int effectedNum = productCategoryDao.deleteProductCategory(productCategoryId, shopId);
             if (effectedNum <= 0){

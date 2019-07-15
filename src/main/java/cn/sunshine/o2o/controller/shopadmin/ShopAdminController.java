@@ -59,4 +59,9 @@ public class ShopAdminController {
         return "shop/productoperation";
     }
 
+    @GetMapping("productmanagement")
+    public String productManagement(){
+        return "shop/productmanagement";
+    }
+
 }

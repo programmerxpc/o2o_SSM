@@ -14,6 +14,15 @@ import java.util.List;
 public interface ProductService {
 
     /**
+     * 分页查询商品列表，可输入的条件有：商品名(模糊)，商品状态，商品类别id,店铺id
+     * @param productCondition
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
+    ProductExecution getProductList(Product productCondition,int pageIndex,int pageSize);
+
+    /**
      * 通过productId查询唯一的商品信息
      * @param productId
      * @return

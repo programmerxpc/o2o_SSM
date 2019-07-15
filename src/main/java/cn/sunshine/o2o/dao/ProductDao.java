@@ -16,7 +16,7 @@ public interface ProductDao {
      * @param productCondition
      * @return
      */
-    int queryProductCount(@Param("shopCondition") Product productCondition);
+    int queryProductCount(@Param("productCondition") Product productCondition);
 
     /**
      * 分页查询商品列表，可输入的条件有：商品名(模糊)，商品状态，商品类别id,店铺id
@@ -25,7 +25,7 @@ public interface ProductDao {
      * @param pageSize
      * @return
      */
-    List<Product> queryProductList(@Param("shopCondition") Product productCondition, @Param("rowIndex") int rowIndex, @Param("pageSize") int pageSize);
+    List<Product> queryProductList(@Param("productCondition") Product productCondition, @Param("rowIndex") int rowIndex, @Param("pageSize") int pageSize);
 
     /**
      * 更新商品信息
@@ -33,6 +33,13 @@ public interface ProductDao {
      * @return
      */
     int updateProduct(Product product);
+
+    /**
+     * 删除商品类别之前，将商品类别id置为空
+     * @param productCategoryId
+     * @return
+     */
+    int updateProductCategoryToNull(long productCategoryId);
 
     /**
      * 通过productId查询唯一的商品信息
