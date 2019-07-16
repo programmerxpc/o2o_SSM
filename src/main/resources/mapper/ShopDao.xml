@@ -37,6 +37,8 @@
       s.phone,
       s.shop_img,
       s.priority,
+      s.create_time,
+      s.last_edit_time,
       s.enable_status,
       s.advice,
       a.area_id,
@@ -46,16 +48,21 @@
       FROM tb_shop s,tb_shop_category sc,tb_area a
       <where>
           <if test="shopCondition.shopName != null">
-              AND shop_name LIKE concat('%',#{shopCondition.shopName},'%')
+              AND s.shop_name LIKE concat('%',#{shopCondition.shopName},'%')
           </if>
           <if test="shopCondition.enableStatus != null">
-              AND enable_status=#{shopCondition.enableStatus}
+              AND s.enable_status=#{shopCondition.enableStatus}
           </if>
           <if test="shopCondition.shopCategory != null and shopCondition.shopCategory.shopCategoryId">
-              AND shop_category_id=#{shopCondition.shopCategory.shopCategoryId}
+              AND s.shop_category_id=#{shopCondition.shopCategory.shopCategoryId}
+          </if>
+          <if test="shopCondition.shopCategory != null and shopCondition.shopCategory.parent != null
+           and shopCondition.shopCategory.parent.shopCategoryId != null">
+              AND s.shop_category_id IN (SELECT shop_category_id FROM tb_shop_category
+              WHERE parent_id=#{shopCondition.shopCategory.parent.shopCategoryId})
           </if>
           <if test="shopCondition.area != null and shopCondition.area.areaId">
-              AND area_id=#{shopCondition.area.areaId}
+              AND s.area_id=#{shopCondition.area.areaId}
           </if>
           <if test="shopCondition.owner != null and shopCondition.owner.userId">
               AND owner_id=#{shopCondition.owner.userId}
@@ -72,16 +79,21 @@
         FROM tb_shop s,tb_shop_category sc,tb_area a
         <where>
             <if test="shopCondition.shopName != null">
-                AND shop_name LIKE concat('%',#{shopCondition.shopName},'%')
+                AND s.shop_name LIKE concat('%',#{shopCondition.shopName},'%')
             </if>
             <if test="shopCondition.enableStatus != null">
-                AND enable_status=#{shopCondition.enableStatus}
+                AND s.enable_status=#{shopCondition.enableStatus}
             </if>
             <if test="shopCondition.shopCategory != null and shopCondition.shopCategory.shopCategoryId">
-                AND shop_category_id=#{shopCondition.shopCategory.shopCategoryId}
+                AND s.shop_category_id=#{shopCondition.shopCategory.shopCategoryId}
+            </if>
+            <if test="shopCondition.shopCategory != null and shopCondition.shopCategory.parent != null
+           and shopCondition.shopCategory.parent.shopCategoryId != null">
+                AND s.shop_category_id IN (SELECT shop_category_id FROM tb_shop_category
+                WHERE parent_id=#{shopCondition.shopCategory.parent.shopCategoryId})
             </if>
             <if test="shopCondition.area != null and shopCondition.area.areaId">
-                AND area_id=#{shopCondition.area.areaId}
+                AND s.area_id=#{shopCondition.area.areaId}
             </if>
             <if test="shopCondition.owner != null and shopCondition.owner.userId">
                 AND owner_id=#{shopCondition.owner.userId}
@@ -101,6 +113,8 @@
       s.priority,
       s.enable_status,
       s.advice,
+      s.create_time,
+      s.last_edit_time,
       a.area_id,
       a.area_name,
       sc.shop_category_id,
